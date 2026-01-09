@@ -438,6 +438,8 @@ public:
     std::wstring& get_super_fast_search_index();
     std::vector<int>& get_super_fast_search_page_indices();
 
+    fz_stext_char* get_next_char_after_selection(int page_number, fz_point document_point);
+
     friend class DocumentManager;
 };
 

@@ -248,15 +248,18 @@ void configure_paths() {
     last_opened_file_address_path = standard_data_path.slash(L"last_document_path.txt");
     shader_path = read_only_data_path.slash(L"shaders");
 #else
-    char* APPDIR = std::getenv("XDG_CONFIG_HOME");
+    char* APPDIR = std::getenv("XDG_DATA_HOME");
     Path linux_home_path(QDir::homePath().toStdWString());
 
     if (!APPDIR) {
         APPDIR = std::getenv("HOME");
+        standard_data_path = Path(utf8_decode(APPDIR));
+        standard_data_path = standard_data_path.slash(L".local").slash(L"share");
+    } else {
+        standard_data_path = Path(utf8_decode(APPDIR));
     }
 
-    standard_data_path = Path(utf8_decode(APPDIR));
-    standard_data_path = standard_data_path.slash(L".local").slash(L"share").slash(L"Sioyek");
+    standard_data_path = standard_data_path.slash(L"sioyek");
     standard_data_path.create_directories();
 
     default_config_path = parent_path.slash(L"prefs.config");

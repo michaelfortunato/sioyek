@@ -131,7 +131,7 @@ Run the following commands to install dependencies, clone the repository and com
 
 ```
 sudo dnf install qt5-qtbase-devel qt5-qtbase-static qt5-qt3d-devel harfbuzz-devel
-git clone --recursive https://github.com/ahrm/sioyek
+git clone --recursive --branch development https://github.com/ahrm/sioyek
 cd sioyek
 ./build_linux.sh
 ``` 
@@ -146,7 +146,7 @@ sudo apt install libharfbuzz-dev
 ```
 3. Clone the repository and build:
 ```
-git clone --recursive https://github.com/ahrm/sioyek
+git clone --recursive --branch development https://github.com/ahrm/sioyek
 cd sioyek
 ./build_linux.sh
 ```
@@ -156,7 +156,7 @@ cd sioyek
 2. Install Qt 5 and make sure qmake is in `PATH`.
 3. Clone the repository and build using 64 bit Visual Studio Developer Command Prompt:
 ```
-git clone --recursive https://github.com/ahrm/sioyek
+git clone --recursive --branch development https://github.com/ahrm/sioyek
 cd sioyek
 build_windows.bat
 ```
@@ -177,7 +177,7 @@ export PATH="/path/to/qt/6.8.2/macos/bin:$PATH"
 ```
 4. Clone the repository, build and install:
 ```
-git clone --recursive https://github.com/ahrm/sioyek
+git clone --recursive --branch development https://github.com/ahrm/sioyek
 cd sioyek
 chmod +x build_mac.sh
 setopt PIPE_FAIL PRINT_EXIT_VALUE ERR_RETURN SOURCE_TRACE XTRACE

@@ -1022,6 +1022,9 @@ public:
     void repeat_last_command();
     void handle_selection_mouse_edge_scrolling(QMouseEvent* me);
     void adjust_two_page_mode_document_zoom_and_offset(std::wstring doc_path);
+
+    void select_next_char();
+    void unselect_last_char();
 };
 
 MainWidget* get_window_with_window_id(int window_id);

@@ -209,6 +209,7 @@ extern bool USE_SYSTEM_THEME;
 extern bool USE_CUSTOM_COLOR_FOR_DARK_SYSTEM_THEME;
 extern bool ALLOW_MAIN_VIEW_SCROLL_WHILE_IN_OVERVIEW;
 extern bool SAME_WIDTH;
+extern bool KEYBOARD_SELECT_INCLUSIVE;
 
 extern bool SIMPLIFY_FREEHAND_DRAWINGS;
 extern bool SHOW_RIGHT_CLICK_CONTEXT_MENU;
@@ -5222,7 +5223,7 @@ void MainWidget::handle_keyboard_select(const std::wstring& text) {
             std::optional<WindowRect> srect_ = get_tag_window_rect(parts.at(0).toStdString(), &schar_rects);
             std::optional<WindowRect> erect_ = get_tag_window_rect(parts.at(1).toStdString(), &echar_rects);
 
-            if ((schar_rects.size() > 0) && (echar_rects.size() > 0)) {
+            if ((!KEYBOARD_SELECT_INCLUSIVE) && (schar_rects.size() > 0) && (echar_rects.size() > 0)) {
                 WindowRect srect = schar_rects[0];
                 WindowRect erect = echar_rects[0];
                 int w = erect.x1 - erect.x0;
@@ -5236,8 +5237,22 @@ void MainWidget::handle_keyboard_select(const std::wstring& text) {
                 WindowRect erect = erect_.value();
 
                 handle_left_click({ srect.x0 + 5, (srect.y0 + srect.y1) / 2 }, true, false, false, false, false);
-                handle_left_click({ erect.x0 - 5 , (erect.y0 + erect.y1) / 2 }, false, false, false, false, false);
+                handle_left_click({ erect.x1 - 5 , (erect.y0 + erect.y1) / 2 }, false, false, false, false, false);
                 opengl_widget->set_should_highlight_words(false);
+            }
+
+            if (KEYBOARD_SELECT_INCLUSIVE) { // don't include the final space
+                std::wstring temp_selected_text;
+                main_document_view->get_text_selection(selection_begin,
+                    selection_end,
+                    selection_mode == SelectionMode::Word ,
+                    main_document_view->selected_character_rects,
+                    temp_selected_text);
+
+                if (temp_selected_text.size() > 0 && temp_selected_text[temp_selected_text.size()-1] == ' ') {
+                    main_document_view->selected_character_rects.pop_back();
+                    selected_text.pop_back();
+                }
             }
 
         }
@@ -7262,6 +7277,33 @@ void MainWidget::show_recursive_context_menu(std::unique_ptr<MenuItems> items) {
     context_menu_right_click_pos = {};
 
     delete context_menu;
+}
+
+void MainWidget::select_next_char(){
+
+    if (main_document_view->selected_character_rects.size() > 0 && selected_text.size() > 0){
+
+        float mid_x = (main_document_view->selected_character_rects.back().x0 + main_document_view->selected_character_rects.back().x1) / 2;
+        float mid_y = (main_document_view->selected_character_rects.back().y0 + main_document_view->selected_character_rects.back().y1) / 2;
+        mid_x += doc()->get_page_width(get_current_page_number()) / 2;
+
+        fz_point point = {mid_x, mid_y};
+        fz_stext_char* next_char = doc()->get_next_char_after_selection(get_current_page_number(), point);
+        if (next_char){
+            main_document_view->selected_character_rects.push_back(
+                DocumentRect(rect_from_quad(next_char->quad), get_current_page_number()).to_absolute(doc())
+            );
+            selected_text.push_back(next_char->c);
+            invalidate_render();
+        }
+    }
+}
+
+void MainWidget::unselect_last_char(){
+    if (main_document_view->selected_character_rects.size() > 0 && selected_text.size() > 0){
+        main_document_view->selected_character_rects.pop_back();
+        selected_text.pop_back();
+    }
 }
 
 void MainWidget::handle_debug_command() {

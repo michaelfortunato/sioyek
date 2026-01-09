@@ -33,6 +33,7 @@ bool SCROLL_PAST_DOCUMENT_ENDS = true;
 bool HORIZONTAL_SCROLL_PAST_PAGE_ENDS = false;
 bool SIMPLIFY_FREEHAND_DRAWINGS = true;
 bool RECTO_VERSO_ADJUSTMENT = false;
+bool KEYBOARD_SELECT_INCLUSIVE = false;
 
 #ifdef SIOYEK_MOBILE
 bool TOUCH_MODE = true;
@@ -1034,6 +1035,7 @@ ConfigManager::ConfigManager(const Path& default_path, const Path& auto_path, co
     add_bool(L"uniform_page_widths", &SAME_WIDTH);
     add_bool(L"simplify_freehand_drawings", &SIMPLIFY_FREEHAND_DRAWINGS);
     add_bool(L"recto_verso_adjustment", &RECTO_VERSO_ADJUSTMENT);
+    add_bool(L"keyboard_select_inclusive", &KEYBOARD_SELECT_INCLUSIVE);
 
     add_string(L"google_scholar_address", &GOOGLE_SCHOLAR_ADDRESS);
     add_string(L"item_list_prefix", &ITEM_LIST_PREFIX);

@@ -4522,3 +4522,23 @@ std::wstring& Document::get_super_fast_search_index() {
 std::vector<int>& Document::get_super_fast_search_page_indices() {
     return super_fast_page_begin_indices;
 }
+
+
+fz_stext_char* Document::get_next_char_after_selection(int page_number, fz_point document_point){
+    fz_stext_page* stext_page = get_stext_with_page_number(context, page_number, doc);
+
+    std::vector<fz_stext_char*> flat_chars;
+    get_flat_chars_from_stext_page(stext_page, flat_chars);
+
+// fz_stext_char* find_closest_char_to_document_point(const std::vector<fz_stext_char*> flat_chars, fz_point document_point, int* location_index) {
+    int location_index = -1;
+    fz_stext_char* char_begin = find_closest_char_to_document_point(flat_chars, document_point, &location_index);
+    if (char_begin) {
+
+        if (location_index + 1 < flat_chars.size()) {
+            fz_stext_char* next_char = flat_chars[location_index + 1];
+            return next_char;
+        }
+    }
+    return nullptr;
+}
